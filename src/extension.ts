@@ -90,7 +90,7 @@ async function moveProperties(
 async function toggleFileVisibility() {
     // if files are hidden,
     if (filesAreCurrentlyHidden()) {
-        notify('Hiding files');
+        notify('Showing files');
         //move entries from "files.exclude" -> "hide-files.exclude"
         moveProperties(
             FILES_CONFIGURATION_NAME,
@@ -100,7 +100,7 @@ async function toggleFileVisibility() {
         );
     } else {
         //move entries from "hide-files.exclude" -> "files.exclude"
-        notify('Showing files');
+        notify('Hiding files');
         moveProperties(
             MY_CONFIGURATION_NAME,
             MY_PROPERTY_NAME,

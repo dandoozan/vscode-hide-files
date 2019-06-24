@@ -2,7 +2,12 @@
     "name": "hide-files",
     "displayName": "Hide Files",
     "description": "Hide Files in File Explorer",
-    "version": "0.0.1",
+    "version": "0.0.4",
+    "publisher": "dandoozan",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/dandoozan/vscode-hide-files"
+    },
     "engines": {
         "vscode": "^1.35.0"
     },
