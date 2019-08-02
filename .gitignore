@@ -1,4 +1,6 @@
-out
+.DS_Store
+.vscode
 node_modules
-.vscode-test/
-*.vsix
+out
+vsix
+PRIVATE_*
