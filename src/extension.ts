@@ -1,5 +1,10 @@
 import { addCommand, notify } from './utils';
-import { workspace, ExtensionContext, ConfigurationTarget } from 'vscode';
+import {
+    workspace,
+    ExtensionContext,
+    ConfigurationTarget,
+    window,
+} from 'vscode';
 import { isEmpty, merge } from 'lodash';
 
 const MY_CONFIGURATION_NAME = 'hide-files';
@@ -8,7 +13,10 @@ const FILES_CONFIGURATION_NAME = 'files';
 const EXCLUDE_PROPERTY_NAME = 'exclude';
 
 function getConfiguration(key: string) {
-    return workspace.getConfiguration(key, null);
+    let uri = window.activeTextEditor
+        ? window.activeTextEditor.document.uri
+        : null;
+    return workspace.getConfiguration(key, uri);
 }
 
 function getConfigurationValue(
@@ -21,7 +29,7 @@ function getConfigurationValue(
 function filesAreCurrentlyHidden() {
     //i'm determining that the files are hidden if my configuration object is empty; now, this
     //could be fooled if the user manually adds something to my config object
-    //on their own, but they shouldn't do that
+    //on their own, so maybe make this more robust in the future
     const files = getConfigurationValue(
         MY_CONFIGURATION_NAME,
         MY_PROPERTY_NAME
@@ -37,7 +45,7 @@ async function setConfigurationProperty(
     await getConfiguration(configuration).update(
         property,
         value,
-        ConfigurationTarget.Global
+        ConfigurationTarget.WorkspaceFolder
     );
 }
 
@@ -49,7 +57,7 @@ async function removeConfigurationProperty(
     await getConfiguration(configuration).update(
         property,
         undefined,
-        ConfigurationTarget.Global
+        ConfigurationTarget.WorkspaceFolder
     );
 }
 
@@ -92,7 +100,7 @@ async function toggleFileVisibility() {
     if (filesAreCurrentlyHidden()) {
         notify('Showing files');
         //move entries from "files.exclude" -> "hide-files.exclude"
-        moveProperties(
+        await moveProperties(
             FILES_CONFIGURATION_NAME,
             EXCLUDE_PROPERTY_NAME,
             MY_CONFIGURATION_NAME,
@@ -101,7 +109,7 @@ async function toggleFileVisibility() {
     } else {
         //move entries from "hide-files.exclude" -> "files.exclude"
         notify('Hiding files');
-        moveProperties(
+        await moveProperties(
             MY_CONFIGURATION_NAME,
             MY_PROPERTY_NAME,
             FILES_CONFIGURATION_NAME,
