@@ -1,3 +1,3 @@
-# Hide Files README
+# Hide Files
 
-Hide files so that the File Explorer is cleaner.
+VSCode extension that hides files in the File Explorer.
