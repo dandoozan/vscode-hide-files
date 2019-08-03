@@ -2,7 +2,7 @@
     "name": "hide-files",
     "displayName": "Hide Files",
     "description": "Hide Files in File Explorer",
-    "version": "0.0.5",
+    "version": "0.0.7",
     "publisher": "dandoozan",
     "repository": {
         "type": "git",
@@ -27,12 +27,12 @@
         ],
         "configuration": {
             "type": "object",
-            "title": "HideFiles Configuration",
+            "title": "HideFiles",
             "properties": {
-                "hide-files.exclude": {
+                "hide-files.files": {
                     "type": "object",
                     "default": {},
-                    "description": "Files To Hide (this holds the hidden file globs temporarily while the files are \"shown\")",
+                    "description": "Glob patterns for files/folders to hide",
                     "scope": "resource"
                 }
             }

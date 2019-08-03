@@ -5,116 +5,59 @@ import {
     ConfigurationTarget,
     window,
 } from 'vscode';
-import { isEmpty, merge } from 'lodash';
+import { isEqual } from 'lodash';
 
-const MY_CONFIGURATION_NAME = 'hide-files';
-const MY_PROPERTY_NAME = 'exclude';
-const FILES_CONFIGURATION_NAME = 'files';
-const EXCLUDE_PROPERTY_NAME = 'exclude';
+const FILES_EXCLUDE_SETTING_NAME = 'files.exclude';
+const MY_SETTING_NAME = 'hide-files.files';
 
-function getConfiguration(key: string) {
+function getConfiguration() {
     let uri = window.activeTextEditor
         ? window.activeTextEditor.document.uri
         : null;
-    return workspace.getConfiguration(key, uri);
+    return workspace.getConfiguration('', uri);
 }
 
-function getConfigurationValue(
-    configurationName: string,
-    propertyName: string
-) {
-    return getConfiguration(configurationName).get(propertyName);
+function areFilesHidden() {
+    //check if "files.exclude" contains the files in "hide-files.files"
+    //if so, the files are hidden
+
+    //todo: handle case when "hide-files.files" is empty; right now, in that
+    //case, this function always returns true, which causes the "Showing files"
+    //notification to keep showing up, but the user sees nothing happen
+    let configuration = getConfiguration();
+    let filesExclude = configuration.get(FILES_EXCLUDE_SETTING_NAME);
+    return isEqual(filesExclude, {
+        ...filesExclude,
+        ...configuration.get(MY_SETTING_NAME),
+    });
 }
 
-function filesAreCurrentlyHidden() {
-    //i'm determining that the files are hidden if my configuration object is empty; now, this
-    //could be fooled if the user manually adds something to my config object
-    //on their own, so maybe make this more robust in the future
-    const files = getConfigurationValue(
-        MY_CONFIGURATION_NAME,
-        MY_PROPERTY_NAME
-    );
-    return isEmpty(files);
-}
-
-async function setConfigurationProperty(
-    configuration: string,
-    property: string,
-    value: any
-) {
-    await getConfiguration(configuration).update(
-        property,
-        value,
-        ConfigurationTarget.WorkspaceFolder
-    );
-}
-
-async function removeConfigurationProperty(
-    configuration: string,
-    property: string
-) {
-    //setting the "value" to "undefined" removes the key from the configuration (per vscode docs)
-    await getConfiguration(configuration).update(
-        property,
+async function showFiles() {
+    //remove the local "files.exclude"
+    await getConfiguration().update(
+        FILES_EXCLUDE_SETTING_NAME,
         undefined,
-        ConfigurationTarget.WorkspaceFolder
+        ConfigurationTarget.Workspace
     );
 }
 
-async function moveProperties(
-    fromConfigurationKey: string,
-    fromPropertyKey: string,
-    toConfigurationKey: string,
-    toPropertyKey: string
-) {
-    const fromObj =
-        getConfigurationValue(fromConfigurationKey, fromPropertyKey) || {};
-    const toObj =
-        getConfigurationValue(toConfigurationKey, toPropertyKey) || {};
-
-    //copy preperties from fromObj -> toObj.
-    //"merge" overwrites the values in toObj (if there are any with the same key
-    //in fromObj), which I think is okay; in the normal case (and every case I believe), one
-    //obj should be empty and the other full, so this shouldn't matter; in any case, if it
-    //does matter, then consider using "defaults" instead
-    const newToObj = merge(toObj, fromObj);
-
-    //update the configurations
-    try {
-        await removeConfigurationProperty(
-            fromConfigurationKey,
-            fromPropertyKey
-        );
-        await setConfigurationProperty(
-            toConfigurationKey,
-            toPropertyKey,
-            newToObj
-        );
-    } catch (e) {
-        console.error(e);
-    }
+async function hideFiles() {
+    //set "files.exclude" to "hide-files.files"
+    let configuration = getConfiguration();
+    await configuration.update(
+        FILES_EXCLUDE_SETTING_NAME,
+        configuration.get(MY_SETTING_NAME),
+        ConfigurationTarget.Workspace
+    );
 }
 
 async function toggleFileVisibility() {
-    // if files are hidden,
-    if (filesAreCurrentlyHidden()) {
+    if (areFilesHidden()) {
+        await showFiles();
         notify('Showing files');
-        //move entries from "files.exclude" -> "hide-files.exclude"
-        await moveProperties(
-            FILES_CONFIGURATION_NAME,
-            EXCLUDE_PROPERTY_NAME,
-            MY_CONFIGURATION_NAME,
-            MY_PROPERTY_NAME
-        );
     } else {
-        //move entries from "hide-files.exclude" -> "files.exclude"
+        await hideFiles();
         notify('Hiding files');
-        await moveProperties(
-            MY_CONFIGURATION_NAME,
-            MY_PROPERTY_NAME,
-            FILES_CONFIGURATION_NAME,
-            EXCLUDE_PROPERTY_NAME
-        );
     }
 }
 
