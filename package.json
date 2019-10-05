@@ -1,63 +1,63 @@
 {
-    "name": "hide-files",
-    "displayName": "Hide Files",
-    "description": "Hide Files in File Explorer",
-    "version": "0.0.7",
-    "publisher": "dandoozan",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/dandoozan/vscode-hide-files"
-    },
-    "engines": {
-        "vscode": "^1.35.0"
-    },
-    "categories": [
-        "Other"
+  "name": "hide-files",
+  "displayName": "Hide Files",
+  "description": "Hide Files in File Explorer",
+  "version": "0.0.7",
+  "publisher": "dandoozan",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dandoozan/vscode-hide-files"
+  },
+  "engines": {
+    "vscode": "^1.35.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:hide-files.toggle"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "hide-files.toggle",
+        "title": "Toggle Hidden Files"
+      }
     ],
-    "activationEvents": [
-        "onCommand:hide-files.toggle"
-    ],
-    "main": "./out/extension.js",
-    "contributes": {
-        "commands": [
-            {
-                "command": "hide-files.toggle",
-                "title": "Toggle Hidden Files"
-            }
-        ],
-        "configuration": {
-            "type": "object",
-            "title": "HideFiles",
-            "properties": {
-                "hide-files.files": {
-                    "type": "object",
-                    "default": {},
-                    "description": "Glob patterns for files/folders to hide",
-                    "scope": "resource"
-                }
-            }
+    "configuration": {
+      "type": "object",
+      "title": "HideFiles",
+      "properties": {
+        "hide-files.files": {
+          "type": "object",
+          "default": {},
+          "description": "Glob patterns for files/folders to hide",
+          "scope": "resource"
         }
-    },
-    "scripts": {
-        "vscode:prepublish": "npm run compile",
-        "compile": "tsc -p ./",
-        "watch": "tsc -watch -p ./",
-        "postinstall": "node ./node_modules/vscode/bin/install",
-        "test": "npm run compile && node ./node_modules/vscode/bin/test",
-        "updateAndInstall": "npm run bumpVersion && npm run createVsix && npm run installVsix",
-        "bumpVersion": "npm --no-git-tag-version version patch",
-        "createVsix": "vsce package --out vsix/$npm_package_name-$npm_package_version.vsix",
-        "installVsix": "code --install-extension vsix/$npm_package_name-$npm_package_version.vsix"
-    },
-    "devDependencies": {
-        "@types/lodash": "^4.14.134",
-        "@types/mocha": "^2.2.42",
-        "@types/node": "^10.12.21",
-        "tslint": "^5.12.1",
-        "typescript": "^3.3.1",
-        "vscode": "^1.1.28"
-    },
-    "dependencies": {
-        "lodash": "^4.17.11"
+      }
     }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "test": "npm run compile && node ./node_modules/vscode/bin/test",
+    "updateAndInstall": "npm run bumpVersion && npm run createVsix && npm run installVsix",
+    "bumpVersion": "npm --no-git-tag-version version patch",
+    "createVsix": "vsce package --out vsix/$npm_package_name-$npm_package_version.vsix",
+    "installVsix": "code --install-extension vsix/$npm_package_name-$npm_package_version.vsix"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.134",
+    "@types/mocha": "^2.2.42",
+    "@types/node": "^10.12.21",
+    "tslint": "^5.12.1",
+    "typescript": "^3.3.1",
+    "vscode": "^1.1.28"
+  },
+  "dependencies": {
+    "lodash": "^4.17.11"
+  }
 }

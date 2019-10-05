@@ -16,9 +16,9 @@ import * as testRunner from 'vscode/lib/testrunner';
 // See https://github.com/mochajs/mocha/wiki/Using-mocha-programmatically#set-options
 // for more info
 testRunner.configure({
-    ui: 'bdd', // the TDD UI is being used in extension.test.ts (suite, test, etc.)
-    useColors: true, // colored output from test results
-    bail: true,
+  ui: 'bdd', // the TDD UI is being used in extension.test.ts (suite, test, etc.)
+  useColors: true, // colored output from test results
+  bail: true,
 });
 
 module.exports = testRunner;
