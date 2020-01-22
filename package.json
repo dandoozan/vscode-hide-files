@@ -1,5 +1,5 @@
 {
-  "name": "hide-files",
+  "name": "vscode-hide-files",
   "displayName": "Hide Files",
   "description": "Hide Files in File Explorer",
   "version": "0.0.7",
